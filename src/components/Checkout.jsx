@@ -65,6 +65,10 @@ function Pedido({ pedidos }) {
 }
 function Envio({
   user,
+  forma_envio,
+  forma_envio_selec,
+  forma_frete,
+  forma_frete_selec,
   handleAdressChange,
   handleFormaEnvioChange,
   handleFormaFreteChange,
@@ -117,89 +121,54 @@ function Envio({
         <h3>Forma de Envio</h3>
         <div id="envio_cont">
           <div className="envio_cont3">
-            <div className="f_envio">
-              <input
-                type="radio"
-                name="envio_forma"
-                id="envio_forma"
-                value="1"
-                onChange={handleFormaEnvioChange}
-              />
-              <label htmlFor="1" className="envio_nome">
-                Retirada no local
-              </label>
-              <p className="envio_preco">Grátis</p>
-            </div>
-            <div className="f_envio">
-              <input
-                type="radio"
-                name="envio_forma"
-                id="envio_forma"
-                value="2"
-                onChange={handleFormaEnvioChange}
-              />
-              <label htmlFor="2" className="envio_nome">
-                Motoboy
-              </label>
-              <p className="envio_preco">R$ 15,00</p>
-            </div>
-            <div className="f_envio">
-              <input
-                type="radio"
-                name="envio_forma"
-                id="envio_forma"
-                value="3"
-                onChange={handleFormaEnvioChange}
-              />
-              <label htmlFor="3" className="envio_nome">
-                PAC
-              </label>
-              <p className="envio_preco">R$ 32,20</p>
-              <p className="envio_previsao">Previsão: até 3 dias úteis</p>
-            </div>
+            {forma_envio.map((fe, i) => (
+              <div className="f_envio" key={i}>
+                <input
+                  type="radio"
+                  name="envio_forma"
+                  id={"envio_forma_" + fe.id}
+                  value={fe.id}
+                  onChange={handleFormaEnvioChange}
+                  checked={fe.id === forma_envio_selec}
+                />
+                <label htmlFor={"envio_forma_" + fe.id} className="envio_nome">
+                  {fe.desc}
+                </label>
+                <p className="envio_preco">
+                  {fe.preco > 0 ? "R$ " + fe.preco.toFixed(2) : "Grátis"}
+                </p>
+                <p className="envio_previsao">
+                  {fe.previsao_dias > 0
+                    ? "Previsão: até " + fe.previsao_dias + " dias úteis"
+                    : ""}
+                </p>
+              </div>
+            ))}
           </div>
           <div className="envio_cont3">
-            <div className="f_envio">
-              <input
-                type="radio"
-                name="envio_frete"
-                id="envio_frete"
-                value="1"
-                onChange={handleFormaFreteChange}
-              />
-              <label htmlFor="1" className="envio_nome">
-                Frete Grátis
-              </label>
-              <p className="envio_preco">Grátis</p>
-            </div>
-            <div className="f_envio">
-              <input
-                type="radio"
-                name="envio_frete"
-                id="envio_frete"
-                value="2"
-                onChange={handleFormaFreteChange}
-              />
-              <label htmlFor="2" className="envio_nome">
-                Retirar próximo ao meu endereço
-              </label>
-              <p className="envio_preco">R$ 20,70</p>
-              <p className="envio_previsao">Previsão: até 4 dias úteis</p>
-            </div>
-            <div className="f_envio">
-              <input
-                type="radio"
-                name="envio_frete"
-                id="envio_frete"
-                value="3"
-                onChange={handleFormaFreteChange}
-              />
-              <label htmlFor="3" className="envio_nome">
-                Package
-              </label>
-              <p className="envio_preco">R$ 39,52</p>
-              <p className="envio_previsao">Previsão: até 4 dias úteis</p>
-            </div>
+            {forma_frete.map((ff, i) => (
+              <div className="f_envio" key={i}>
+                <input
+                  type="radio"
+                  name="envio_frete"
+                  id={"envio_frete_" + ff.id}
+                  value={ff.id}
+                  onChange={handleFormaFreteChange}
+                  checked={ff.id === forma_frete_selec}
+                />
+                <label htmlFor={"envio_frete_" + ff.id} className="envio_nome">
+                  {ff.desc}
+                </label>
+                <p className="envio_preco">
+                  {ff.preco > 0 ? "R$ " + ff.preco.toFixed(2) : "Grátis"}
+                </p>
+                <p className="envio_previsao">
+                  {ff.previsao_dias > 0
+                    ? "Previsão: até " + ff.previsao_dias + " dias úteis"
+                    : ""}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -218,7 +187,8 @@ function Envio({
     </div>
   );
 }
-function Resumo({ handleFormaPagamentoChange }) {
+function Resumo({ subtotal, forma_envio, handleFormaPagamentoChange }) {
+  console.log(subtotal, forma_envio.preco, subtotal + forma_envio.preco);
   return (
     <div id="resumo">
       <h3>Resumo</h3>
@@ -229,15 +199,19 @@ function Resumo({ handleFormaPagamentoChange }) {
               <p className="prices-header">Subtotal</p>
             </td>
             <td className="row-div">
-              <p className="prices">R$ 1350,00</p>
+              <p className="prices">R$ {subtotal.toFixed(2)}</p>
             </td>
           </tr>
           <tr>
             <td className="row-div">
-              <p className="prices-header">PAC</p>
+              <p className="prices-header">{forma_envio.desc}</p>
             </td>
             <td className="row-div">
-              <p className="prices">+ R$ 32,20</p>
+              <p className="prices">
+                {forma_envio.preco > 0
+                  ? "+ R$ " + forma_envio.preco.toFixed(2)
+                  : "Grátis"}
+              </p>
             </td>
           </tr>
           <tr>
@@ -245,9 +219,16 @@ function Resumo({ handleFormaPagamentoChange }) {
               <p className="prices-header total-header">Total do Pedido</p>
             </td>
             <td>
-              <p className="prices total">R$ 1382,20</p>
-              <p className="prices">em até 3X de R$ 460,73</p>
-              <p className="prices">ou 1382,20 no</p>
+              <p className="prices total">
+                R$ {(subtotal + forma_envio.preco).toFixed(2)}
+              </p>
+              <p className="prices">
+                em até 3X de R${" "}
+                {((subtotal + forma_envio.preco) / 3).toFixed(2)}
+              </p>
+              <p className="prices">
+                ou {(subtotal + forma_envio.preco).toFixed(2)} no
+              </p>
               <p className="prices">
                 depósito ou transferência com % de desconto
               </p>
@@ -256,7 +237,7 @@ function Resumo({ handleFormaPagamentoChange }) {
           <tr>
             <td className="points" colSpan="2">
               <img src="./img/refund.png" />
-              <p>Você ganha 1350 pontos nesta compra. Aproveite!</p>
+              <p>Você ganha {subtotal} pontos nesta compra. Aproveite!</p>
             </td>
           </tr>
           <tr>
@@ -440,8 +421,8 @@ function Checkout() {
   });
   const [compra, setCompra] = useState({
     adr_id: 0,
-    forma_envio: 0,
-    forma_frete: 0,
+    forma_envio: 1,
+    forma_frete: 1,
     obs: "",
     forma_pagamento: 0,
   });
@@ -503,18 +484,71 @@ function Checkout() {
     alert("Compra Finalizada!");
   };
 
+  const forma_envio = [
+    {
+      id: 1,
+      desc: "Retirada no local",
+      preco: 0.0,
+      previsao_dias: 0,
+    },
+    {
+      id: 2,
+      desc: "Motoboy",
+      preco: 15.0,
+      previsao_dias: 0,
+    },
+    {
+      id: 3,
+      desc: "PAC",
+      preco: 32.2,
+      previsao_dias: 3,
+    },
+  ];
+  const forma_frete = [
+    {
+      id: 1,
+      desc: "Frete Grátis",
+      preco: 0.0,
+      previsao_dias: 0,
+    },
+    {
+      id: 2,
+      desc: "Retirar próximo ao meu endereço",
+      preco: 20.7,
+      previsao_dias: 4,
+    },
+    {
+      id: 3,
+      desc: "Package",
+      preco: 39.52,
+      previsao_dias: 4,
+    },
+  ];
+
   return (
     <main>
       <form method="POST" onSubmit={handleCompra}>
         <Pedido pedidos={carrinho.pedidos} />
         <Envio
           user={user}
+          forma_envio={forma_envio}
+          forma_envio_selec={compra.forma_envio}
+          forma_frete={forma_frete}
+          forma_frete_selec={compra.forma_frete}
           handleAdressChange={handleAdressChange}
           handleFormaEnvioChange={handleFormaEnvioChange}
           handleFormaFreteChange={handleFormaFreteChange}
           handleObsChange={handleObsChange}
         />
-        <Resumo handleFormaPagamentoChange={handleFormaPagamentoChange} />
+        <Resumo
+          subtotal={carrinho.pedidos.reduce((a, p) => {
+            return a + p.qt * p.preco;
+          }, 0)}
+          forma_envio={
+            forma_envio.filter((fe) => fe.id === compra.forma_envio)[0]
+          }
+          handleFormaPagamentoChange={handleFormaPagamentoChange}
+        />
         <div id="rodape">
           <a href="#">
             <p>
