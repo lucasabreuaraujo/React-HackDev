@@ -1,5 +1,14 @@
+import React from 'react';
+
+import './App.css';
+import Carrinho from './componentes/carrinho';
+
 function App() {
-    return <h1>Ready to code!</h1>;
+  return (
+    <div className="App">
+      <Carrinho />
+    </div>
+  );
 }
 
 export default App;
